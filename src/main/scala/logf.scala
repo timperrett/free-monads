@@ -36,7 +36,7 @@ object Logging {
 
 object Println {
   import Logging._
-  import scalaz._, Scalaz._
+  import scalaz.{~>,Id}, Id.Id
 
   private def write(prefix: String, msg: String): Unit = 
     println(s"[$prefix] $msg")
@@ -46,17 +46,17 @@ object Println {
   private def warn(msg: String): Unit  = write("WARN", msg)
   private def error(msg: String): Unit = write("ERROR", msg)
 
-  val foo: LogF ~> Id = new (LogF ~> Id) {
+  private val exe: LogF ~> Id = new (LogF ~> Id) {
     def apply[B](l: LogF[B]): B = l match { 
       case Debug(msg,a) => { debug(msg); a } 
       case Info(msg,a) => { info(msg); a } 
       case Warn(msg,a) => { warn(msg); a } 
       case Error(msg,a) => { error(msg); a } 
-    } 
+    }
   }
 
   def apply[A](log: Log[A]): A = 
-    log.runM(foo.apply[Log[A]])
+    log.runM(exe.apply[Log[A]])
 }
 
 object Main {
