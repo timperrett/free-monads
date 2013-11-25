@@ -1,6 +1,6 @@
 package example 
 
-import scalaz.{Free,Functor}, Free.Return, Free.Suspend
+import scalaz.{~>,Id,Free,Functor}, Free.Return, Free.Suspend, Id.Id
 
 // needs to be covarient because of scalaz.Free
 sealed trait LogF[+A] 
@@ -36,7 +36,6 @@ object Logging {
 
 object Println {
   import Logging._
-  import scalaz.{~>,Id}, Id.Id
 
   private def write(prefix: String, msg: String): Unit = 
     println(s"[$prefix] $msg")
@@ -59,6 +58,28 @@ object Println {
     log.runM(exe.apply[Log[A]])
 }
 
+/**
+  * Interpreter for SLF4J
+  */ 
+object SLF4J {
+  import Logging._
+  import org.slf4j.{Logger,LoggerFactory}
+
+  private val log = LoggerFactory.getLogger(SLF4J.getClass)
+
+  private val exe: LogF ~> Id = new (LogF ~> Id) {
+    def apply[B](l: LogF[B]): B = l match { 
+      case Debug(msg,a) => { log.debug(msg); a } 
+      case Info(msg,a) => { log.info(msg); a } 
+      case Warn(msg,a) => { log.warn(msg); a } 
+      case Error(msg,a) => { log.error(msg); a } 
+    }
+  }
+
+  def apply[A](log: Log[A]): A = 
+    log.runM(exe.apply[Log[A]])
+}
+
 object Main {
   import Logging.log
 
@@ -69,6 +90,6 @@ object Main {
     } yield b
 
   def main(args: Array[String]): Unit = {
-    Println(program)
+    SLF4J(program)
   }
 }
