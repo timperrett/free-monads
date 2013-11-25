@@ -27,10 +27,10 @@ object Logging {
   case class Error[A](msg: String, o: A) extends LogF[A]
 
   object log {
-    def debug(msg: String): Free[LogF, Unit] = Debug(msg, ())
-    def info(msg: String): Free[LogF, Unit]  = Info(msg, ())
-    def warn(msg: String): Free[LogF, Unit]  = Warn(msg, ())
-    def error(msg: String): Free[LogF, Unit] = Error(msg, ())
+    def debug(msg: String): Log[Unit] = Debug(msg, ())
+    def info(msg: String): Log[Unit]  = Info(msg, ())
+    def warn(msg: String): Log[Unit]  = Warn(msg, ())
+    def error(msg: String): Log[Unit] = Error(msg, ())
   }
 }
 
