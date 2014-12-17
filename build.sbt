@@ -5,12 +5,12 @@ organization := "com.timperrett"
 
 libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % "7.0.4",
-  "ch.qos.logback" % "logback-classic" % "1.0.13")
+  "ch.qos.logback" % "logback-classic" % "1.1.2")
 
 resolvers += "Sonatype OSS Snapshots" at
   "https://oss.sonatype.org/content/repositories/snapshots"
 
-libraryDependencies += "com.github.axel22" %% "scalameter" % "0.4"
+libraryDependencies += "com.storm-enroute" %% "scalameter" % "0.6"
 
 testFrameworks += new TestFramework(
   "org.scalameter.ScalaMeterFramework")
@@ -22,4 +22,4 @@ scalacOptions ++= Seq(
   "-language:postfixOps", 
   "-language:implicitConversions")
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.11.4"
