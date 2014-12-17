@@ -1,9 +1,8 @@
 package example 
 
-import scalaz.{~>,Id,Free,Functor}, Free.Return, Free.Suspend, Id.Id
+import scalaz.{~>,Id,Free,Functor}, Id.Id
 
-// needs to be covarient because of scalaz.Free
-sealed trait LogF[+A] 
+sealed trait LogF[A]
 
 object Logging {
   type Log[A] = Free[LogF, A]
@@ -18,8 +17,8 @@ object Logging {
       }
   }
 
-  implicit def logFToFree[A](logf: LogF[A]): Free[LogF,A] = 
-    Suspend[LogF, A](Functor[LogF].map(logf)(a => Return[LogF, A](a))) 
+  implicit def logFToFree[A](logf: LogF[A]): Free[LogF,A] =
+    Free.liftF(logf)
 
   case class Debug[A](msg: String, o: A) extends LogF[A]
   case class Info[A](msg: String, o: A) extends LogF[A]

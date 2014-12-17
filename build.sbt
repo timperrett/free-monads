@@ -4,7 +4,7 @@ name := "free-logging"
 organization := "com.timperrett"
 
 libraryDependencies ++= Seq(
-  "org.scalaz" %% "scalaz-core" % "7.0.4",
+  "org.scalaz" %% "scalaz-core" % "7.1.0",
   "ch.qos.logback" % "logback-classic" % "1.1.2")
 
 resolvers += "Sonatype OSS Snapshots" at
